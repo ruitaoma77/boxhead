@@ -2,12 +2,13 @@ import random
 
 import pygame
 
+import functions
 import mob
 import pistol
 import player
 import projectile
 import shotgun
-from  ReprTraceback import ReprTraceback
+from ReprTraceback import ReprTraceback
 ReprTraceback.init()
 
 pygame.init()
@@ -30,11 +31,16 @@ keys_pressed = -1
 projectiles = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
 weapons = pygame.sprite.Group()
+default_ammo_count = {"pistol": 20, "shotgun": 10}
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+text_font = pygame.font.SysFont("Arial", 30)
+
 run = True
 while run:
 
     screen.fill(BG)
+    functions.draw_text(player.current_weapon + " bullets remaining " + str(player.weapon_ammo[player.weapon_index]), text_font,
+                        (0, 0, 0), 1150, 25, screen)
     players.draw(screen)
     mobs.update(player)
     mobs.draw(screen)
@@ -49,6 +55,8 @@ while run:
         if keys_pressed != -1 and keys_pressed[pygame.K_SPACE]:
             char_pos_x, char_pos_y = player.get_position()
             char_direction = player.get_direction()
+            if player.weapon_ammo[player.weapon_index] == 0:
+                continue
             if player.current_weapon == "pistol":
                 proj = projectile.Projectile(char_pos_x, char_pos_y, 10, char_direction, 5, 2, "black")
                 proj.add(projectiles)
@@ -61,6 +69,7 @@ while run:
                 proj1.add(projectiles)
                 proj2.add(projectiles)
                 proj3.add(projectiles)
+            player.weapon_ammo[player.weapon_index] -= 1
 
         if event.type == SPAWNENEMY:
             mob_pos_x, mob_pos_y = random.randint(50, 1450), random.randint(50, 950)
@@ -105,9 +114,11 @@ while run:
                 weapon_name = weapon.name
                 if weapon_name not in cur_player.weapon_map:
                     cur_player.weapon_arsenal.append(weapon_name)
+                    cur_player.weapon_ammo.append(default_ammo_count[weapon_name])
                     cur_player.weapon_map[weapon_name] = len(cur_player.weapon_arsenal)-1
                 cur_player.weapon_index = cur_player.weapon_map[weapon_name]
                 cur_player.current_weapon = cur_player.weapon_arsenal[cur_player.weapon_index]
+                cur_player.weapon_ammo[cur_player.weapon_index] = default_ammo_count[cur_player.current_weapon]
                 print(cur_player.current_weapon, cur_player.weapon_arsenal, cur_player.weapon_index)
                 weapon.kill()
 
