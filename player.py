@@ -4,7 +4,7 @@ import pygame
 class Player(pygame.sprite.Sprite):
     def __init__(self, height: float, width: float, pos_x: float, pos_y: float, movement_speed: float, direction: str,
                  health: int, weapon: str, weapon_index: int, color: str, weapon_map={"pistol": 0},
-                 weapon_arsenal=["pistol"], weapon_ammo=[20], current_weapon="pistol"):
+                 weapon_arsenal=["pistol"], weapon_ammo=[50], current_weapon="pistol"):
         super().__init__()
         self.movement_speed = movement_speed
         self.height = height
