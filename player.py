@@ -25,31 +25,33 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (pos_x, pos_y)
 
-    def update(self, keys_pressed):
+    def update(self, keys_pressed, scancode_wrapper: bool):
         if self.health <= 0:
             self.kill()
         # for some reason, pressing the button once causes many print statements, could be how update works in pygame
-        if keys_pressed[pygame.K_q]:
-            self.weapon_index = (self.weapon_index - 1) % len(self.weapon_arsenal)
-            self.current_weapon = self.weapon_arsenal[self.weapon_index]
-            print(self.current_weapon, self.weapon_arsenal, self.weapon_index)
-        if keys_pressed[pygame.K_e]:
-            self.weapon_index = (self.weapon_index + 1) % len(self.weapon_arsenal)
-            self.current_weapon = self.weapon_arsenal[self.weapon_index]
-            print(self.current_weapon, self.weapon_arsenal, self.weapon_index)
-        if keys_pressed[pygame.K_UP]:
-            self.pos_y -= self.movement_speed
-            self.direction = "up"
-        if keys_pressed[pygame.K_DOWN]:
-            self.pos_y += self.movement_speed
-            self.direction = "down"
-        if keys_pressed[pygame.K_RIGHT]:
-            self.pos_x += self.movement_speed
-            self.direction = "right"
-        if keys_pressed[pygame.K_LEFT]:
-            self.pos_x -= self.movement_speed
-            self.direction = "left"
-        self.rect.center = (self.pos_x, self.pos_y)
+        if not scancode_wrapper:
+            if keys_pressed == pygame.K_q:
+                self.weapon_index = (self.weapon_index - 1) % len(self.weapon_arsenal)
+                self.current_weapon = self.weapon_arsenal[self.weapon_index]
+                print(self.current_weapon, self.weapon_arsenal, self.weapon_index)
+            if keys_pressed == pygame.K_e:
+                self.weapon_index = (self.weapon_index + 1) % len(self.weapon_arsenal)
+                self.current_weapon = self.weapon_arsenal[self.weapon_index]
+                print(self.current_weapon, self.weapon_arsenal, self.weapon_index)
+        else:
+            if keys_pressed[pygame.K_UP]:
+                self.pos_y -= self.movement_speed
+                self.direction = "up"
+            if keys_pressed[pygame.K_DOWN]:
+                self.pos_y += self.movement_speed
+                self.direction = "down"
+            if keys_pressed[pygame.K_RIGHT]:
+                self.pos_x += self.movement_speed
+                self.direction = "right"
+            if keys_pressed[pygame.K_LEFT]:
+                self.pos_x -= self.movement_speed
+                self.direction = "left"
+            self.rect.center = (self.pos_x, self.pos_y)
 
     def get_direction(self):
         return self.direction

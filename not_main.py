@@ -91,6 +91,9 @@ while run:
                 proj3.add(projectiles)
             player.weapon_ammo[player.weapon_index] -= 1
 
+        if event.type == pygame.KEYDOWN:
+            player.update(event.key, False)
+
         if event.type == SPAWNENEMY and not new_wave.spawn_complete:
             mob_pos_x, mob_pos_y = random.randint(50, 1450), random.randint(50, 950)
             new_mob = mob.Mob(5, .2, 2, mob_pos_x, mob_pos_y, "white")
@@ -152,9 +155,8 @@ while run:
                 print(cur_player.current_weapon, cur_player.weapon_arsenal, cur_player.weapon_index)
                 weapon.kill()
 
-
     keys_pressed = pygame.key.get_pressed()
-    player.update(keys_pressed)
+    player.update(keys_pressed, True)
 
     pygame.display.flip()
 
