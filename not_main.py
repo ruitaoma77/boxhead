@@ -9,16 +9,21 @@ import player
 import projectile
 import shotgun
 import wave
+import background
+import camera
+import border
 from ReprTraceback import ReprTraceback
 
 ReprTraceback.init()
 
 pygame.init()
 
-SCREEN_WIDTH = 1500
-SCREEN_HEIGHT = 1000
-
-BG = (100, 100, 255)
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+BG = (150, 150, 255)
+BackGround = background.Background('assets\\background.png', [0, 0])
+pygame.transform.scale(BackGround.image, screen.get_size())
 directions: list = ["up", "right", "down", "left"]
 weapon_specific_projectiles: dict = {"shotgun": {"up": ("shotgun_up_1", "shotgun_up_2"),
                                                  "right": ("shotgun_right_1", "shotgun_right_2"),
@@ -28,17 +33,18 @@ SPAWNENEMY = pygame.USEREVENT
 SPAWNWEAPON = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNENEMY, 3000)
 pygame.time.set_timer(SPAWNWEAPON, 5000)
-player = player.Player(50, 50, 500, 500, 0.5, direction="down", health=10,
+player = player.Player(50, 50, 500, 500, .5, direction="down", health=10,
                        weapon="pistol", weapon_index=0, color="red")
 players = pygame.sprite.Group()
 player.add(players)
-# define keys_pressed earlier to make sure it's redefined before use
-keys_pressed = -1
+camera = camera.Camera(player)
+border = border.Border(camera, player)
+camera.setmethod(border)
 projectiles = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
 weapons = pygame.sprite.Group()
 default_ammo_count: dict = {"pistol": 50, "shotgun": 50}
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
 text_font = pygame.font.SysFont("Arial", 30)
 wave_map: dict = {1: 3, 2: 20, 3: 30}
 current_wave = 1
@@ -47,8 +53,14 @@ new_wave = wave.Wave(current_wave, wave_map[current_wave], 0, wave_map[current_w
 
 run = True
 while run:
-
     screen.fill(BG)
+    screen.blit(BackGround.image, (0 - camera.offset.x, 0 - camera.offset.y))
+    keys_pressed = pygame.key.get_pressed()
+    player.update(keys_pressed, True)
+    screen.blit(player.image, (player.pos_x-25, player.pos_y-25))
+    # in order to actually have the character in the correct position, I need to adjust the actual player position
+    # rather than just the image that appears
+    print(player.pos_x, player.pos_y, "single")
     functions.draw_text(player.current_weapon + " bullets remaining: " + str(player.weapon_ammo[player.weapon_index]),
                         text_font, (0, 0, 0), 1150, 25, screen)
     functions.draw_text("Current Health:" + str(player.health), text_font, (0, 0, 0), 1150, 60, screen)
@@ -56,6 +68,8 @@ while run:
     functions.draw_text("Mobs Remaining: " + str(new_wave.mobs_remaining), text_font, (0, 0, 0), 650, 60, screen)
     functions.draw_text("Mobs Spawned: " + str(new_wave.mobs_spawned), text_font, (0, 0, 0), 650, 95, screen)
     players.draw(screen)
+    for stuff in players:
+        print(stuff.pos_x, stuff.pos_y, "group")
     mobs.update(player)
     mobs.draw(screen)
     projectiles.update()
@@ -63,28 +77,30 @@ while run:
     weapons.update()
     weapons.draw(screen)
     new_wave.update()
+    camera.scroll()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
-        if keys_pressed != -1 and keys_pressed[pygame.K_SPACE]:
+        if keys_pressed[pygame.K_SPACE]:
             char_pos_x, char_pos_y = player.get_position()
             char_direction = player.get_direction()
             if player.weapon_ammo[player.weapon_index] == 0:
                 continue
             if player.current_weapon == "pistol":
-                proj = projectile.Projectile(char_pos_x, char_pos_y, 10, char_direction, 5, 2, "black")
+                proj = projectile.Projectile(char_pos_x, char_pos_y, 10, char_direction, 5, 2, "blue")
                 proj.add(projectiles)
             elif player.current_weapon == "shotgun":
                 proj1 = projectile.Projectile(char_pos_x, char_pos_y, 10,
                                               weapon_specific_projectiles[player.current_weapon][char_direction][0],
                                               5, 2,
-                                              "black")
-                proj2 = projectile.Projectile(char_pos_x, char_pos_y, 10, char_direction, 5, 2, "black")
+                                              "blue")
+                proj2 = projectile.Projectile(char_pos_x, char_pos_y, 10, char_direction, 5, 2, "blue")
                 proj3 = projectile.Projectile(char_pos_x, char_pos_y, 10,
                                               weapon_specific_projectiles[player.current_weapon][char_direction][1],
                                               5, 2,
-                                              "black")
+                                              "blue")
 
                 proj1.add(projectiles)
                 proj2.add(projectiles)
@@ -154,9 +170,6 @@ while run:
                 cur_player.weapon_ammo[cur_player.weapon_index] = default_ammo_count[cur_player.current_weapon]
                 print(cur_player.current_weapon, cur_player.weapon_arsenal, cur_player.weapon_index)
                 weapon.kill()
-
-    keys_pressed = pygame.key.get_pressed()
-    player.update(keys_pressed, True)
 
     pygame.display.flip()
 

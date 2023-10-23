@@ -2,7 +2,8 @@ import pygame
 import pistol
 import shotgun
 import math
-
+max_width = 2000
+max_height = 1103
 
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, pos_x: float, pos_y: float, radius: float, direction: str, proj_vel: float, damage: float,
@@ -56,7 +57,7 @@ class Projectile(pygame.sprite.Sprite):
 
         self.rect.center = (self.pos_x, self.pos_y)
         # change the line below using constants rather than hard coded values
-        if self.rect.top > 1000 or self.rect.bottom < 0 or self.rect.left > 1500 or self.rect.right < 0:
+        if self.rect.top > max_height or self.rect.bottom < 0 or self.rect.left > max_width or self.rect.right < 0:
             self.kill()
 
 

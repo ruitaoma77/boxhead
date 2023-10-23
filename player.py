@@ -1,4 +1,6 @@
 import pygame
+max_width = 2000
+max_height = 1103
 
 
 class Player(pygame.sprite.Sprite):
@@ -39,18 +41,30 @@ class Player(pygame.sprite.Sprite):
                 self.current_weapon = self.weapon_arsenal[self.weapon_index]
                 print(self.current_weapon, self.weapon_arsenal, self.weapon_index)
         else:
-            if keys_pressed[pygame.K_UP]:
-                self.pos_y -= self.movement_speed
-                self.direction = "up"
-            if keys_pressed[pygame.K_DOWN]:
-                self.pos_y += self.movement_speed
-                self.direction = "down"
-            if keys_pressed[pygame.K_RIGHT]:
-                self.pos_x += self.movement_speed
-                self.direction = "right"
-            if keys_pressed[pygame.K_LEFT]:
-                self.pos_x -= self.movement_speed
-                self.direction = "left"
+            if 0 < self.pos_y < max_height:
+                if keys_pressed[pygame.K_UP]:
+                    self.pos_y -= self.movement_speed
+                    self.direction = "up"
+                if keys_pressed[pygame.K_DOWN]:
+                    self.pos_y += self.movement_speed
+                    self.direction = "down"
+            else:
+                if self.pos_y <= 0:
+                    self.pos_y += self.movement_speed
+                elif self.pos_y >= max_height:
+                    self.pos_y -= self.movement_speed
+            if 0 < self.pos_x < max_width:
+                if keys_pressed[pygame.K_RIGHT]:
+                    self.pos_x += self.movement_speed
+                    self.direction = "right"
+                if keys_pressed[pygame.K_LEFT]:
+                    self.pos_x -= self.movement_speed
+                    self.direction = "left"
+            else:
+                if self.pos_x <= 0:
+                    self.pos_x += self.movement_speed
+                elif self.pos_x >= max_height:
+                    self.pos_x -= self.movement_speed
             self.rect.center = (self.pos_x, self.pos_y)
 
     def get_direction(self):
