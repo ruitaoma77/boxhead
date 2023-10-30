@@ -1,4 +1,5 @@
 import pygame
+camera = (500, 500)
 max_width = 2000
 max_height = 1103
 
@@ -26,6 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.center = (pos_x, pos_y)
+        self.camera = [0, 0]
 
     def update(self, keys_pressed, scancode_wrapper: bool):
         if self.health <= 0:
@@ -44,9 +46,11 @@ class Player(pygame.sprite.Sprite):
             if 0 < self.pos_y < max_height:
                 if keys_pressed[pygame.K_UP]:
                     self.pos_y -= self.movement_speed
+                    self.camera[1] += self.movement_speed
                     self.direction = "up"
                 if keys_pressed[pygame.K_DOWN]:
                     self.pos_y += self.movement_speed
+                    self.camera[1] -= self.movement_speed
                     self.direction = "down"
             else:
                 if self.pos_y <= 0:
@@ -56,9 +60,11 @@ class Player(pygame.sprite.Sprite):
             if 0 < self.pos_x < max_width:
                 if keys_pressed[pygame.K_RIGHT]:
                     self.pos_x += self.movement_speed
+                    self.camera[0] -= self.movement_speed
                     self.direction = "right"
                 if keys_pressed[pygame.K_LEFT]:
                     self.pos_x -= self.movement_speed
+                    self.camera[0] += self.movement_speed
                     self.direction = "left"
             else:
                 if self.pos_x <= 0:

@@ -33,7 +33,7 @@ SPAWNENEMY = pygame.USEREVENT
 SPAWNWEAPON = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNENEMY, 3000)
 pygame.time.set_timer(SPAWNWEAPON, 5000)
-player = player.Player(50, 50, 500, 500, .5, direction="down", health=10,
+player = player.Player(50, 50, 500, 500, .2, direction="down", health=10,
                        weapon="pistol", weapon_index=0, color="red")
 players = pygame.sprite.Group()
 player.add(players)
@@ -50,32 +50,38 @@ wave_map: dict = {1: 3, 2: 20, 3: 30}
 current_wave = 1
 # can potentially create a group for waves in the future. Considering some stages to split players up into their own
 new_wave = wave.Wave(current_wave, wave_map[current_wave], 0, wave_map[current_wave], [], False, False)
-
 run = True
+temp_camera = pygame.math.Vector2((0, 0))
 while run:
     screen.fill(BG)
-    screen.blit(BackGround.image, (0 - camera.offset.x, 0 - camera.offset.y))
+    temp_camera.x = player.pos_x - 500
+    temp_camera.y = player.pos_y - 500
+    screen.blit(BackGround.image, (0-temp_camera.x, 0-temp_camera.y))
     keys_pressed = pygame.key.get_pressed()
     player.update(keys_pressed, True)
-    screen.blit(player.image, (player.pos_x-25, player.pos_y-25))
-    # in order to actually have the character in the correct position, I need to adjust the actual player position
-    # rather than just the image that appears
-    print(player.pos_x, player.pos_y, "single")
+    screen.blit(player.image, (player.pos_x - 25 - temp_camera.x, player.pos_y - 25 - temp_camera.y))
+    # You need to reblit all of the sprites according to the camera. Do not change the actual position of the sprite,
+    # ONLY change where the sprite is blitted so it preserves the actual location of all the sprites.
+    print(player.pos_x, player.camera[0])
     functions.draw_text(player.current_weapon + " bullets remaining: " + str(player.weapon_ammo[player.weapon_index]),
                         text_font, (0, 0, 0), 1150, 25, screen)
     functions.draw_text("Current Health:" + str(player.health), text_font, (0, 0, 0), 1150, 60, screen)
     functions.draw_text("Wave: " + str(new_wave.wave_number), text_font, (0, 0, 0), 700, 25, screen)
     functions.draw_text("Mobs Remaining: " + str(new_wave.mobs_remaining), text_font, (0, 0, 0), 650, 60, screen)
     functions.draw_text("Mobs Spawned: " + str(new_wave.mobs_spawned), text_font, (0, 0, 0), 650, 95, screen)
-    players.draw(screen)
-    for stuff in players:
-        print(stuff.pos_x, stuff.pos_y, "group")
+    #players.draw(screen)
     mobs.update(player)
-    mobs.draw(screen)
+    for mob1 in mobs:
+        screen.blit(mob1.image, (mob1.pos_x - 25 - temp_camera.x, mob1.pos_y - 25 - temp_camera.y))
+    #mobs.draw(screen)
     projectiles.update()
-    projectiles.draw(screen)
+    for projectile1 in projectiles:
+        screen.blit(projectile1.image, (projectile1.pos_x - temp_camera.x, projectile1.pos_y - temp_camera.y))
+    #projectiles.draw(screen)
     weapons.update()
-    weapons.draw(screen)
+    for weapon1 in weapons:
+        screen.blit(weapon1.image, (weapon1.pos_x - temp_camera.x, weapon1.pos_y - temp_camera.y))
+    #weapons.draw(screen)
     new_wave.update()
     camera.scroll()
 

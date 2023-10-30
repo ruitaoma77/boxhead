@@ -14,7 +14,7 @@ class Border:
         self.camera.offset_float.y += (self.player.pos_y - self.camera.offset_float.y - 500)
         self.camera.offset.x, self.camera.offset_y = int(self.camera.offset_float.x), int(self.camera.offset_float.y)
         self.camera.offset.x = max(self.camera.offset.x, 0)
-        self.camera.offset.x = min(self.camera.offset.x, max_width - 500)
+        self.camera.offset.x = min(self.camera.offset.x, max_width)
         #self.camera.offset.y = max(self.camera.offset.y, 0)
         #self.camera.offset.y = min(500, max_height + self.camera.offset.y)
 
