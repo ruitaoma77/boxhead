@@ -20,6 +20,10 @@ pygame.init()
 
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
+left_border_x = 0
+right_border_x = 1200
+upper_border_y = 0
+lower_border_y = 1000
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BG = (150, 150, 255)
 BackGround = background.Background('assets\\background.png', [0, 0])
@@ -55,12 +59,14 @@ temp_camera = pygame.math.Vector2((0, 0))
 while run:
     screen.fill(BG)
     temp_camera.x = player.pos_x - 500
+    temp_camera.x = max(left_border_x, temp_camera.x)
+    temp_camera.x = min(temp_camera.x, right_border_x - 500)
     temp_camera.y = player.pos_y - 500
     screen.blit(BackGround.image, (0-temp_camera.x, 0-temp_camera.y))
     keys_pressed = pygame.key.get_pressed()
     player.update(keys_pressed, True)
     screen.blit(player.image, (player.pos_x - 25 - temp_camera.x, player.pos_y - 25 - temp_camera.y))
-    # You need to reblit all of the sprites according to the camera. Do not change the actual position of the sprite,
+    # You need to re-blit all the sprites according to the camera. Do not change the actual position of the sprite,
     # ONLY change where the sprite is blitted so it preserves the actual location of all the sprites.
     print(player.pos_x, player.camera[0])
     functions.draw_text(player.current_weapon + " bullets remaining: " + str(player.weapon_ammo[player.weapon_index]),
@@ -69,19 +75,19 @@ while run:
     functions.draw_text("Wave: " + str(new_wave.wave_number), text_font, (0, 0, 0), 700, 25, screen)
     functions.draw_text("Mobs Remaining: " + str(new_wave.mobs_remaining), text_font, (0, 0, 0), 650, 60, screen)
     functions.draw_text("Mobs Spawned: " + str(new_wave.mobs_spawned), text_font, (0, 0, 0), 650, 95, screen)
-    #players.draw(screen)
+    # players.draw(screen)
     mobs.update(player)
     for mob1 in mobs:
         screen.blit(mob1.image, (mob1.pos_x - 25 - temp_camera.x, mob1.pos_y - 25 - temp_camera.y))
-    #mobs.draw(screen)
+    # mobs.draw(screen)
     projectiles.update()
     for projectile1 in projectiles:
-        screen.blit(projectile1.image, (projectile1.pos_x - temp_camera.x, projectile1.pos_y - temp_camera.y))
-    #projectiles.draw(screen)
+        screen.blit(projectile1.image, (projectile1.pos_x - temp_camera.x - 5, projectile1.pos_y - temp_camera.y - 5))
+    # projectiles.draw(screen)
     weapons.update()
     for weapon1 in weapons:
-        screen.blit(weapon1.image, (weapon1.pos_x - temp_camera.x, weapon1.pos_y - temp_camera.y))
-    #weapons.draw(screen)
+        screen.blit(weapon1.image, (weapon1.pos_x - temp_camera.x - 25, weapon1.pos_y - temp_camera.y - 25))
+    # weapons.draw(screen)
     new_wave.update()
     camera.scroll()
 
