@@ -30,6 +30,18 @@ class Projectile(pygame.sprite.Sprite):
             self.pos_x += self.proj_vel
         elif self.direction == "left":
             self.pos_x -= self.proj_vel
+        elif self.direction == "up_right":
+            self.pos_y -= self.proj_vel * math.sin(math.pi / 4)
+            self.pos_x += self.proj_vel * math.sin(math.pi / 4)
+        elif self.direction == "up_left":
+            self.pos_y -= self.proj_vel * math.sin(math.pi / 4)
+            self.pos_x -= self.proj_vel * math.sin(math.pi / 4)
+        elif self.direction == "down_right":
+            self.pos_y += self.proj_vel * math.sin(math.pi / 4)
+            self.pos_x += self.proj_vel * math.sin(math.pi / 4)
+        elif self.direction == "down_left":
+            self.pos_y += self.proj_vel * math.sin(math.pi / 4)
+            self.pos_x -= self.proj_vel * math.sin(math.pi / 4)
         elif self.direction == "shotgun_up_1":
             self.pos_x -= self.proj_vel * math.sin(math.pi / 12)
             self.pos_y -= self.proj_vel * math.cos(math.pi / 12)
@@ -54,6 +66,30 @@ class Projectile(pygame.sprite.Sprite):
         elif self.direction == "shotgun_down_2":
             self.pos_x += self.proj_vel * math.sin(math.pi / 12)
             self.pos_y += self.proj_vel * math.cos(-math.pi / 12)
+        elif self.direction == "shotgun_up_right_1":
+            self.pos_x += self.proj_vel * math.cos(math.pi / 6)
+            self.pos_y -= self.proj_vel * math.sin(math.pi / 6)
+        elif self.direction == "shotgun_up_right_2":
+            self.pos_x += self.proj_vel * math.cos(math.pi / 3)
+            self.pos_y -= self.proj_vel * math.sin(math.pi / 3)
+        elif self.direction == "shotgun_up_left_1":
+            self.pos_x -= self.proj_vel * math.cos(math.pi / 6)
+            self.pos_y -= self.proj_vel * math.sin(math.pi / 6)
+        elif self.direction == "shotgun_up_left_2":
+            self.pos_x -= self.proj_vel * math.cos(math.pi / 3)
+            self.pos_y -= self.proj_vel * math.sin(math.pi / 3)
+        elif self.direction == "shotgun_down_right_1":
+            self.pos_x += self.proj_vel * math.cos(math.pi / 6)
+            self.pos_y += self.proj_vel * math.sin(math.pi / 6)
+        elif self.direction == "shotgun_down_right_2":
+            self.pos_x += self.proj_vel * math.cos(math.pi / 3)
+            self.pos_y += self.proj_vel * math.sin(math.pi / 3)
+        elif self.direction == "shotgun_down_left_1":
+            self.pos_x -= self.proj_vel * math.cos(math.pi / 6)
+            self.pos_y += self.proj_vel * math.sin(math.pi / 6)
+        elif self.direction == "shotgun_down_left_2":
+            self.pos_x -= self.proj_vel * math.cos(math.pi / 3)
+            self.pos_y += self.proj_vel * math.sin(math.pi / 3)
 
         self.rect.center = (self.pos_x, self.pos_y)
         # change the line below using constants rather than hard coded values

@@ -18,12 +18,12 @@ ReprTraceback.init()
 
 pygame.init()
 
-SCREEN_WIDTH = 1920
-SCREEN_HEIGHT = 1080
-left_border_x = 0
-right_border_x = 1200
-upper_border_y = 0
-lower_border_y = 1000
+SCREEN_WIDTH: int = 1920
+SCREEN_HEIGHT: int = 1080
+left_border_x: int = 0
+right_border_x: int = 1200
+upper_border_y: int = 0
+lower_border_y: int = 1000
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BG = (150, 150, 255)
 BackGround = background.Background('assets\\background.png', [0, 0])
@@ -32,12 +32,16 @@ directions: list = ["up", "right", "down", "left"]
 weapon_specific_projectiles: dict = {"shotgun": {"up": ("shotgun_up_1", "shotgun_up_2"),
                                                  "right": ("shotgun_right_1", "shotgun_right_2"),
                                                  "down": ("shotgun_down_1", "shotgun_down_2"),
-                                                 "left": ("shotgun_left_1", "shotgun_left_2")}}
+                                                 "left": ("shotgun_left_1", "shotgun_left_2"),
+                                                 "up_right": ("shotgun_up_right_1", "shotgun_up_right_2"),
+                                                 "up_left": ("shotgun_up_left_1", "shotgun_up_left_2"),
+                                                 "down_right": ("shotgun_down_right_1", "shotgun_down_right_2"),
+                                                 "down_left": ("shotgun_down_left_1", "shotgun_down_left_2")}}
 SPAWNENEMY = pygame.USEREVENT
 SPAWNWEAPON = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNENEMY, 3000)
 pygame.time.set_timer(SPAWNWEAPON, 5000)
-player = player.Player(50, 50, 500, 500, .2, direction="down", health=10,
+player = player.Player(50, 50, 500, 500, .5, direction="down", health=10,
                        weapon="pistol", weapon_index=0, color="red")
 players = pygame.sprite.Group()
 player.add(players)
@@ -60,21 +64,22 @@ while run:
     screen.fill(BG)
     temp_camera.x = player.pos_x - 500
     temp_camera.x = max(left_border_x, temp_camera.x)
-    temp_camera.x = min(temp_camera.x, right_border_x - 500)
+    temp_camera.x = min(temp_camera.x, right_border_x - 1000)
     temp_camera.y = player.pos_y - 500
+    temp_camera.y = max(upper_border_y, temp_camera.y)
+    temp_camera.y = min(temp_camera.y, lower_border_y - 500)
     screen.blit(BackGround.image, (0-temp_camera.x, 0-temp_camera.y))
     keys_pressed = pygame.key.get_pressed()
     player.update(keys_pressed, True)
     screen.blit(player.image, (player.pos_x - 25 - temp_camera.x, player.pos_y - 25 - temp_camera.y))
     # You need to re-blit all the sprites according to the camera. Do not change the actual position of the sprite,
     # ONLY change where the sprite is blitted so it preserves the actual location of all the sprites.
-    print(player.pos_x, player.camera[0])
     functions.draw_text(player.current_weapon + " bullets remaining: " + str(player.weapon_ammo[player.weapon_index]),
-                        text_font, (0, 0, 0), 1150, 25, screen)
-    functions.draw_text("Current Health:" + str(player.health), text_font, (0, 0, 0), 1150, 60, screen)
-    functions.draw_text("Wave: " + str(new_wave.wave_number), text_font, (0, 0, 0), 700, 25, screen)
-    functions.draw_text("Mobs Remaining: " + str(new_wave.mobs_remaining), text_font, (0, 0, 0), 650, 60, screen)
-    functions.draw_text("Mobs Spawned: " + str(new_wave.mobs_spawned), text_font, (0, 0, 0), 650, 95, screen)
+                        text_font, (255, 255, 255), 1150, 25, screen)
+    functions.draw_text("Current Health:" + str(player.health), text_font, (255, 255, 255), 1150, 60, screen)
+    functions.draw_text("Wave: " + str(new_wave.wave_number), text_font, (255, 255, 255), 700, 25, screen)
+    functions.draw_text("Mobs Remaining: " + str(new_wave.mobs_remaining), text_font, (255, 255, 255), 650, 60, screen)
+    functions.draw_text("Mobs Spawned: " + str(new_wave.mobs_spawned), text_font, (255, 255, 255), 650, 95, screen)
     # players.draw(screen)
     mobs.update(player)
     for mob1 in mobs:
