@@ -1,7 +1,7 @@
 import pygame
 camera = (500, 500)
-max_width = 2000
-max_height = 1103
+max_width = 2879
+max_height = 1500
 
 
 class Player(pygame.sprite.Sprite):

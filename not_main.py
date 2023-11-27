@@ -21,12 +21,12 @@ pygame.init()
 SCREEN_WIDTH: int = 1920
 SCREEN_HEIGHT: int = 1080
 left_border_x: int = 0
-right_border_x: int = 1200
+right_border_x: int = 2879
 upper_border_y: int = 0
-lower_border_y: int = 1000
+lower_border_y: int = 1500
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 BG = (150, 150, 255)
-BackGround = background.Background('assets\\background.png', [0, 0])
+BackGround = background.Background('assets\\background_image.png', [0, 0])
 pygame.transform.scale(BackGround.image, screen.get_size())
 directions: list = ["up", "right", "down", "left"]
 weapon_specific_projectiles: dict = {"shotgun": {"up": ("shotgun_up_1", "shotgun_up_2"),
@@ -41,7 +41,7 @@ SPAWNENEMY = pygame.USEREVENT
 SPAWNWEAPON = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNENEMY, 3000)
 pygame.time.set_timer(SPAWNWEAPON, 5000)
-player = player.Player(50, 50, 500, 500, .5, direction="down", health=10,
+player = player.Player(50, 50, 990, 540, 1.5, direction="down", health=10,
                        weapon="pistol", weapon_index=0, color="red")
 players = pygame.sprite.Group()
 player.add(players)
@@ -62,12 +62,12 @@ run = True
 temp_camera = pygame.math.Vector2((0, 0))
 while run:
     screen.fill(BG)
-    temp_camera.x = player.pos_x - 500
+    temp_camera.x = player.pos_x - 990
     temp_camera.x = max(left_border_x, temp_camera.x)
-    temp_camera.x = min(temp_camera.x, right_border_x - 1000)
-    temp_camera.y = player.pos_y - 500
+    temp_camera.x = min(temp_camera.x, right_border_x - 1920)
+    temp_camera.y = player.pos_y - 540
     temp_camera.y = max(upper_border_y, temp_camera.y)
-    temp_camera.y = min(temp_camera.y, lower_border_y - 500)
+    temp_camera.y = min(temp_camera.y, lower_border_y - 1080)
     screen.blit(BackGround.image, (0-temp_camera.x, 0-temp_camera.y))
     keys_pressed = pygame.key.get_pressed()
     player.update(keys_pressed, True)
